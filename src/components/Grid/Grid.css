@@ -1,2 +1,12 @@
 .grid {
+  margin: 30px;
+  display: grid;
+  grid-template-columns: 25% 25% 25% 25%;
+  justify-content: center;
+}
+.grid > div {
+}
+.grid img {
+  object-fit: cover;
+  height: 130px;
 }
