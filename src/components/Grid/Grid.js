@@ -11,7 +11,6 @@ const Grid = () => {
       .then(obj => setItems(obj.results));
   }, []);
 
-  console.log("RESULTS", items);
   if (order === orders[0]) {
     items.sort((a, b) => a.episode_id - b.episode_id);
   } else if (order === orders[1]) {
