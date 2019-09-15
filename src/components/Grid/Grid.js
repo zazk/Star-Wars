@@ -1,20 +1,52 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
+import { Route, Link } from "react-router-dom";
+import Movie from "../Movie";
 import "./Grid.css";
 
 const Grid = () => {
   const orders = ["episode_id", "created"];
   const [items, setItems] = useState([]);
+  const [people, setPeople] = useState([]);
   const [order, setOrder] = useState(orders[0]);
+
+  const fetchPeople = useCallback(() => {
+    const getPeople = (url, items) => {
+      fetch(url)
+        .then(response => response.json())
+        .then(obj => {
+          console.log(obj);
+          if (obj.next) {
+            getPeople(obj.next, items.concat(obj.results));
+          } else {
+            setPeople(items.concat(obj.results));
+          }
+        });
+    };
+    getPeople("https://swapi.co/api/people/", []);
+  }, []);
+
   useEffect(() => {
     fetch("https://swapi.co/api/films/")
       .then(response => response.json())
       .then(obj => setItems(obj.results));
-  }, []);
+    fetchPeople();
+  }, [fetchPeople]);
 
   if (order === orders[0]) {
     items.sort((a, b) => a.episode_id - b.episode_id);
   } else if (order === orders[1]) {
     items.sort((a, b) => new Date(a.release_date) - new Date(b.release_date));
+  }
+  if (people.length > 0) {
+    items.map(item => {
+      item.characters = item.characters
+        .map(c => {
+          const [, , , , , character] = c.split("/");
+          return people[character - 1];
+        })
+        .filter(c => c);
+      return item;
+    });
   }
   return (
     <div>
@@ -26,14 +58,19 @@ const Grid = () => {
       <div className="grid">
         {items.map((item, index) => (
           <div key={item.episode_id}>
-            <img
-              width={100}
-              src={`http://w.areminds.com/f/starwars/${item.episode_id}.jpg`}
-              alt={item.title}
-            />
+            <Link
+              to={{ pathname: `/${item.episode_id}`, state: { movie: item } }}
+            >
+              <img
+                width={100}
+                src={`http://w.areminds.com/f/starwars/${item.episode_id}.jpg`}
+                alt={item.title}
+              />
+            </Link>
           </div>
         ))}
       </div>
+      <Route path="/:id" component={Movie} />
     </div>
   );
 };
