@@ -1,10 +1,11 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useRef } from "react";
 import { Route, Link } from "react-router-dom";
 import Movie from "../Movie";
 import "./Grid.css";
 
 const Grid = () => {
   const orders = ["episode_id", "created"];
+  const isParsed = useRef(false);
   const [items, setItems] = useState([]);
   const [people, setPeople] = useState([]);
   const [order, setOrder] = useState(orders[0]);
@@ -37,7 +38,8 @@ const Grid = () => {
   } else if (order === orders[1]) {
     items.sort((a, b) => new Date(a.release_date) - new Date(b.release_date));
   }
-  if (people.length > 0) {
+  console.log("PEOPLE", people, "PARSED", isParsed.current);
+  if (people.length > 0 && !isParsed.current) {
     items.map(item => {
       item.characters = item.characters
         .map(c => {
@@ -45,6 +47,7 @@ const Grid = () => {
           return people[character - 1];
         })
         .filter(c => c);
+      isParsed.current = true;
       return item;
     });
   }

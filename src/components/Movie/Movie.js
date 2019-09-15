@@ -1,9 +1,12 @@
 import React from "react";
+import { Redirect } from "react-router-dom";
 const Movie = ({ location }) => {
+  if (!location.state) {
+    return <Redirect to="/" />;
+  }
   const movie = location.state.movie;
   const [charse] = movie.characters;
-  console.log("CHAR  s", charse, "Movie", movie);
-  console.log("Movie", movie);
+
   return (
     <div>
       <h2>{movie.title}</h2>
