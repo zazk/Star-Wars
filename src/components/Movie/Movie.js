@@ -1,5 +1,5 @@
 import React from "react";
-import { Redirect } from "react-router-dom";
+import { Redirect, Link } from "react-router-dom";
 const Movie = ({ location }) => {
   if (!location.state) {
     return <Redirect to="/" />;
@@ -17,7 +17,18 @@ const Movie = ({ location }) => {
       <p>Characters</p>
       {charse &&
         charse.name &&
-        movie.characters.map((c, index) => <div key={index}>{c.name}</div>)}
+        movie.characters.map((c, index) => (
+          <div key={index}>
+            <Link
+              to={{
+                pathname: `/character/${index}`,
+                state: { character: c }
+              }}
+            >
+              {c.name}
+            </Link>
+          </div>
+        ))}
     </div>
   );
 };

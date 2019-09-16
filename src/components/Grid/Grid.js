@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback, useRef } from "react";
 import { Route, Link } from "react-router-dom";
 import Movie from "../Movie";
+import Character from "../Character";
 import "./Grid.css";
 
 const Grid = () => {
@@ -15,7 +16,6 @@ const Grid = () => {
       fetch(url)
         .then(response => response.json())
         .then(obj => {
-          console.log(obj);
           if (obj.next) {
             getPeople(obj.next, items.concat(obj.results));
           } else {
@@ -38,7 +38,7 @@ const Grid = () => {
   } else if (order === orders[1]) {
     items.sort((a, b) => new Date(a.release_date) - new Date(b.release_date));
   }
-  console.log("PEOPLE", people, "PARSED", isParsed.current);
+
   if (people.length > 0 && !isParsed.current) {
     items.map(item => {
       item.characters = item.characters
@@ -62,7 +62,10 @@ const Grid = () => {
         {items.map((item, index) => (
           <div key={item.episode_id}>
             <Link
-              to={{ pathname: `/${item.episode_id}`, state: { movie: item } }}
+              to={{
+                pathname: `/movie/${item.episode_id}`,
+                state: { movie: item }
+              }}
             >
               <img
                 width={100}
@@ -73,7 +76,8 @@ const Grid = () => {
           </div>
         ))}
       </div>
-      <Route path="/:id" component={Movie} />
+      <Route path="/movie/:id" component={Movie} />
+      <Route path="/character/:id" component={Character} />
     </div>
   );
 };

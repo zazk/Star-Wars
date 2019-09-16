@@ -4,7 +4,7 @@
   grid-template-columns: 25% 25% 25% 25%;
   justify-content: center;
 }
-.grid > div:hover > img {
+.grid > div:hover img {
   box-shadow: 0 0 20px;
   transform: scale(1.5);
 }
